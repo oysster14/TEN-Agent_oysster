@@ -1,130 +1,15 @@
 {
   "_ten": {
-    "log_level": 3,
     "predefined_graphs": [
       {
         "name": "va_openai_azure_fashionai",
         "auto_start": false,
-        "connections": [
-          {
-            "data": [
-              {
-                "dest": [
-                  {
-                    "extension": "interrupt_detector",
-                    "extension_group": "default"
-                  },
-                  {
-                    "extension": "openai_chatgpt",
-                    "extension_group": "chatgpt"
-                  },
-                  {
-                    "extension": "message_collector",
-                    "extension_group": "transcriber"
-                  }
-                ],
-                "name": "text_data"
-              }
-            ],
-            "extension": "agora_rtc",
-            "extension_group": "default"
-          },
-          {
-            "cmd": [
-              {
-                "dest": [
-                  {
-                    "extension": "azure_tts",
-                    "extension_group": "tts"
-                  },
-                  {
-                    "extension": "fashionai",
-                    "extension_group": "default"
-                  }
-                ],
-                "name": "flush"
-              }
-            ],
-            "data": [
-              {
-                "dest": [
-                  {
-                    "extension": "message_collector",
-                    "extension_group": "transcriber"
-                  },
-                  {
-                    "extension": "fashionai",
-                    "extension_group": "default"
-                  }
-                ],
-                "name": "text_data"
-              }
-            ],
-            "extension": "openai_chatgpt",
-            "extension_group": "chatgpt"
-          },
-          {
-            "audio_frame": [
-              {
-                "dest": [
-                  {
-                    "extension": "agora_rtc",
-                    "extension_group": "default"
-                  }
-                ],
-                "name": "pcm_frame"
-              }
-            ],
-            "cmd": [
-              {
-                "dest": [
-                  {
-                    "extension": "agora_rtc",
-                    "extension_group": "default"
-                  }
-                ],
-                "name": "flush"
-              }
-            ],
-            "extension": "azure_tts",
-            "extension_group": "tts"
-          },
-          {
-            "data": [
-              {
-                "dest": [
-                  {
-                    "extension": "agora_rtc",
-                    "extension_group": "default"
-                  }
-                ],
-                "name": "data"
-              }
-            ],
-            "extension": "message_collector",
-            "extension_group": "transcriber"
-          },
-          {
-            "cmd": [
-              {
-                "dest": [
-                  {
-                    "extension": "openai_chatgpt",
-                    "extension_group": "chatgpt"
-                  }
-                ],
-                "name": "flush"
-              }
-            ],
-            "extension": "interrupt_detector",
-            "extension_group": "default"
-          }
-        ],
         "nodes": [
           {
+            "type": "extension",
+            "name": "agora_rtc",
             "addon": "agora_rtc",
             "extension_group": "default",
-            "name": "agora_rtc",
             "property": {
               "agora_asr_language": "en-US",
               "agora_asr_session_control_file_path": "session_control.conf",
@@ -140,19 +25,19 @@
               "stream_id": 1234,
               "subscribe_audio": true,
               "token": "<agora_token>"
-            },
-            "type": "extension"
+            }
           },
           {
-            "addon": "interrupt_detector",
-            "extension_group": "default",
+            "type": "extension",
             "name": "interrupt_detector",
-            "type": "extension"
+            "addon": "interrupt_detector",
+            "extension_group": "default"
           },
           {
+            "type": "extension",
+            "name": "openai_chatgpt",
             "addon": "openai_chatgpt",
             "extension_group": "chatgpt",
-            "name": "openai_chatgpt",
             "property": {
               "api_key": "${env:OPENAI_API_KEY}",
               "base_url": "${env:OPENAI_API_BASE}",
@@ -163,106 +48,37 @@
               "model": "${env:OPENAI_MODEL}",
               "prompt": "",
               "proxy_url": "${env:OPENAI_PROXY_URL}"
-            },
-            "type": "extension"
+            }
           },
           {
+            "type": "extension",
+            "name": "azure_tts",
             "addon": "azure_tts",
             "extension_group": "tts",
-            "name": "azure_tts",
             "property": {
               "azure_subscription_key": "$AZURE_TTS_KEY",
               "azure_subscription_region": "$AZURE_TTS_REGION",
               "azure_synthesis_voice_name": "en-US-JaneNeural"
-            },
-            "type": "extension"
+            }
           },
           {
-            "addon": "message_collector",
-            "extension_group": "transcriber",
+            "type": "extension",
             "name": "message_collector",
-            "type": "extension"
+            "addon": "message_collector",
+            "extension_group": "transcriber"
           },
           {
+            "type": "extension",
+            "name": "fashionai",
             "addon": "fashionai",
             "extension_group": "default",
-            "name": "fashionai",
             "property": {
               "app_id": "$AGORA_APP_ID",
               "channel": "ten_agents_test",
               "stream_id": 12345,
               "token": "",
               "service_id": "agora"
-            },
-            "type": "extension"
-          }
-        ]
-      },
-      {
-        "name": "va_openai_azure",
-        "auto_start": false,
-        "nodes": [
-          {
-            "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
-            "name": "agora_rtc",
-            "property": {
-              "app_id": "${env:AGORA_APP_ID}",
-              "token": "<agora_token>",
-              "channel": "ten_agent_test",
-              "stream_id": 1234,
-              "remote_stream_id": 123,
-              "subscribe_audio": true,
-              "publish_audio": true,
-              "publish_data": true,
-              "enable_agora_asr": true,
-              "agora_asr_vendor_name": "microsoft",
-              "agora_asr_language": "en-US",
-              "agora_asr_vendor_key": "${env:AZURE_STT_KEY}",
-              "agora_asr_vendor_region": "${env:AZURE_STT_REGION}",
-              "agora_asr_session_control_file_path": "session_control.conf"
             }
-          },
-          {
-            "type": "extension",
-            "extension_group": "default",
-            "addon": "interrupt_detector",
-            "name": "interrupt_detector"
-          },
-          {
-            "type": "extension",
-            "extension_group": "chatgpt",
-            "addon": "openai_chatgpt",
-            "name": "openai_chatgpt",
-            "property": {
-              "base_url": "${env:OPENAI_API_BASE}",
-              "api_key": "${env:OPENAI_API_KEY}",
-              "frequency_penalty": 0.9,
-              "model": "${env:OPENAI_MODEL}",
-              "max_tokens": 512,
-              "prompt": "",
-              "proxy_url": "${env:OPENAI_PROXY_URL}",
-              "greeting": "TEN Agent connected. How can I help you today?",
-              "max_memory_length": 10
-            }
-          },
-          {
-            "type": "extension",
-            "extension_group": "tts",
-            "addon": "azure_tts",
-            "name": "azure_tts",
-            "property": {
-              "azure_subscription_key": "${env:AZURE_TTS_KEY}",
-              "azure_subscription_region": "${env:AZURE_TTS_REGION}",
-              "azure_synthesis_voice_name": "en-US-AndrewMultilingualNeural"
-            }
-          },
-          {
-            "type": "extension",
-            "extension_group": "transcriber",
-            "addon": "message_collector",
-            "name": "message_collector"
           }
         ],
         "connections": [
@@ -292,6 +108,200 @@
           {
             "extension_group": "chatgpt",
             "extension": "openai_chatgpt",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "azure_tts"
+                  },
+                  {
+                    "extension_group": "default",
+                    "extension": "fashionai"
+                  }
+                ]
+              }
+            ],
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension_group": "transcriber",
+                    "extension": "message_collector"
+                  },
+                  {
+                    "extension_group": "default",
+                    "extension": "fashionai"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "extension_group": "tts",
+            "extension": "azure_tts",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "default",
+                    "extension": "agora_rtc"
+                  }
+                ]
+              }
+            ],
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
+                "dest": [
+                  {
+                    "extension_group": "default",
+                    "extension": "agora_rtc"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "extension_group": "transcriber",
+            "extension": "message_collector",
+            "data": [
+              {
+                "name": "data",
+                "dest": [
+                  {
+                    "extension_group": "default",
+                    "extension": "agora_rtc"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "extension_group": "default",
+            "extension": "interrupt_detector",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "chatgpt",
+                    "extension": "openai_chatgpt"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "va_openai_azure",
+        "auto_start": false,
+        "nodes": [
+          {
+            "type": "extension",
+            "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
+            "property": {
+              "app_id": "${env:AGORA_APP_ID}",
+              "token": "<agora_token>",
+              "channel": "ten_agent_test",
+              "stream_id": 1234,
+              "remote_stream_id": 123,
+              "subscribe_audio": true,
+              "publish_audio": true,
+              "publish_data": true,
+              "enable_agora_asr": true,
+              "agora_asr_vendor_name": "microsoft",
+              "agora_asr_language": "en-US",
+              "agora_asr_vendor_key": "${env:AZURE_STT_KEY}",
+              "agora_asr_vendor_region": "${env:AZURE_STT_REGION}",
+              "agora_asr_session_control_file_path": "session_control.conf"
+            }
+          },
+          {
+            "type": "extension",
+            "name": "interrupt_detector",
+            "addon": "interrupt_detector",
+            "extension_group": "default"
+          },
+          {
+            "type": "extension",
+            "name": "openai_chatgpt",
+            "addon": "openai_chatgpt",
+            "extension_group": "chatgpt",
+            "property": {
+              "base_url": "${env:OPENAI_API_BASE}",
+              "api_key": "${env:OPENAI_API_KEY}",
+              "frequency_penalty": 0.9,
+              "model": "${env:OPENAI_MODEL}",
+              "max_tokens": 512,
+              "prompt": "",
+              "proxy_url": "${env:OPENAI_PROXY_URL}",
+              "greeting": "TEN Agent connected. How can I help you today?",
+              "max_memory_length": 10
+            }
+          },
+          {
+            "type": "extension",
+            "name": "azure_tts",
+            "addon": "azure_tts",
+            "extension_group": "tts",
+            "property": {
+              "azure_subscription_key": "${env:AZURE_TTS_KEY}",
+              "azure_subscription_region": "${env:AZURE_TTS_REGION}",
+              "azure_synthesis_voice_name": "en-US-AndrewMultilingualNeural"
+            }
+          },
+          {
+            "type": "extension",
+            "name": "message_collector",
+            "addon": "message_collector",
+            "extension_group": "transcriber"
+          }
+        ],
+        "connections": [
+          {
+            "extension_group": "default",
+            "extension": "agora_rtc",
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension_group": "default",
+                    "extension": "interrupt_detector"
+                  },
+                  {
+                    "extension_group": "chatgpt",
+                    "extension": "openai_chatgpt"
+                  },
+                  {
+                    "extension_group": "transcriber",
+                    "extension": "message_collector"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "extension_group": "chatgpt",
+            "extension": "openai_chatgpt",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "azure_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -306,25 +316,14 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "azure_tts"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "azure_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -333,9 +332,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -383,9 +382,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "rtc",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "rtc",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "",
@@ -400,9 +399,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "openai_v2v_python",
             "name": "openai_v2v_python",
+            "addon": "openai_v2v_python",
+            "extension_group": "llm",
             "property": {
               "api_key": "${env:AZURE_OPENAI_REALTIME_API_KEY}",
               "temperature": 0.9,
@@ -421,9 +420,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           }
         ],
         "connections": [
@@ -445,9 +444,9 @@
           {
             "extension_group": "llm",
             "extension": "openai_v2v_python",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -467,9 +466,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -502,9 +501,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -524,15 +523,15 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           },
           {
             "type": "extension",
-            "extension_group": "chatgpt",
-            "addon": "openai_chatgpt",
             "name": "openai_chatgpt",
+            "addon": "openai_chatgpt",
+            "extension_group": "chatgpt",
             "property": {
               "base_url": "${env:OPENAI_API_BASE}",
               "api_key": "${env:OPENAI_API_KEY}",
@@ -547,9 +546,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "elevenlabs_tts",
             "name": "elevenlabs_tts",
+            "addon": "elevenlabs_tts",
+            "extension_group": "tts",
             "property": {
               "api_key": "${env:ELEVENLABS_TTS_KEY}",
               "model_id": "eleven_multilingual_v2",
@@ -564,9 +563,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           }
         ],
         "connections": [
@@ -596,6 +595,17 @@
           {
             "extension_group": "chatgpt",
             "extension": "openai_chatgpt",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "elevenlabs_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -610,25 +620,14 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "elevenlabs_tts"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "elevenlabs_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -637,9 +636,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -687,9 +686,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -709,15 +708,15 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           },
           {
             "type": "extension",
-            "extension_group": "chatgpt",
-            "addon": "openai_chatgpt",
             "name": "openai_chatgpt",
+            "addon": "openai_chatgpt",
+            "extension_group": "chatgpt",
             "property": {
               "base_url": "${env:OPENAI_API_BASE}",
               "api_key": "${env:OPENAI_API_KEY}",
@@ -732,15 +731,15 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "fish_audio_tts",
             "name": "fish_audio_tts",
+            "addon": "fish_audio_tts",
+            "extension_group": "tts",
             "property": {
               "api_key": "${env:FISH_AUDIO_TTS_KEY}",
               "model_id": "d8639b5cc95548f5afbcfe22d3ba5ce5",
@@ -777,6 +776,17 @@
           {
             "extension_group": "chatgpt",
             "extension": "openai_chatgpt",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "fish_audio_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -791,25 +801,14 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "fish_audio_tts"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "fish_audio_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -818,9 +817,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -868,9 +867,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -890,9 +889,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "bedrock",
-            "addon": "bedrock_llm_python",
             "name": "bedrock_llm",
+            "addon": "bedrock_llm_python",
+            "extension_group": "bedrock",
             "property": {
               "region": "us-east-1",
               "access_key": "${env:AWS_ACCESS_KEY_ID}",
@@ -906,9 +905,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "azure_tts",
             "name": "azure_tts",
+            "addon": "azure_tts",
+            "extension_group": "tts",
             "property": {
               "azure_subscription_key": "${env:AZURE_TTS_KEY}",
               "azure_subscription_region": "${env:AZURE_TTS_REGION}",
@@ -917,9 +916,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector_python",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           }
         ],
         "connections": [
@@ -945,9 +944,9 @@
           {
             "extension_group": "bedrock",
             "extension": "bedrock_llm",
-            "data": [
+            "cmd": [
               {
-                "name": "text_data",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "tts",
@@ -956,9 +955,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "data": [
               {
-                "name": "flush",
+                "name": "text_data",
                 "dest": [
                   {
                     "extension_group": "tts",
@@ -971,9 +970,9 @@
           {
             "extension_group": "tts",
             "extension": "azure_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -982,9 +981,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1017,9 +1016,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -1039,9 +1038,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "chatgpt",
-            "addon": "openai_chatgpt_python",
             "name": "openai_chatgpt",
+            "addon": "openai_chatgpt_python",
+            "extension_group": "chatgpt",
             "property": {
               "base_url": "${env:OPENAI_API_BASE}",
               "api_key": "${env:OPENAI_API_KEY}",
@@ -1056,9 +1055,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "cosy_tts",
             "name": "cosy_tts",
+            "addon": "cosy_tts",
+            "extension_group": "tts",
             "property": {
               "api_key": "${env:QWEN_API_KEY}",
               "model": "cosyvoice-v1",
@@ -1068,40 +1067,21 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector_python",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           },
           {
             "type": "extension",
-            "extension_group": "chat_transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "chat_transcriber"
           }
         ],
         "connections": [
           {
             "extension_group": "default",
             "extension": "agora_rtc",
-            "data": [
-              {
-                "name": "text_data",
-                "dest": [
-                  {
-                    "extension_group": "default",
-                    "extension": "interrupt_detector"
-                  },
-                  {
-                    "extension_group": "chatgpt",
-                    "extension": "openai_chatgpt"
-                  },
-                  {
-                    "extension_group": "chat_transcriber",
-                    "extension": "message_collector"
-                  }
-                ]
-              }
-            ],
             "cmd": [
               {
                 "name": "on_user_joined",
@@ -1121,11 +1101,41 @@
                   }
                 ]
               }
+            ],
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension_group": "default",
+                    "extension": "interrupt_detector"
+                  },
+                  {
+                    "extension_group": "chatgpt",
+                    "extension": "openai_chatgpt"
+                  },
+                  {
+                    "extension_group": "chat_transcriber",
+                    "extension": "message_collector"
+                  }
+                ]
+              }
             ]
           },
           {
             "extension_group": "chatgpt",
             "extension": "openai_chatgpt",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "cosy_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -1140,25 +1150,14 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "cosy_tts"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "cosy_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1167,9 +1166,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1217,9 +1216,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -1239,9 +1238,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "qwen_llm_python",
             "name": "qwen_llm",
+            "addon": "qwen_llm_python",
+            "extension_group": "llm",
             "property": {
               "api_key": "${env:QWEN_API_KEY}",
               "model": "qwen-max",
@@ -1252,9 +1251,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "cosy_tts",
             "name": "cosy_tts",
+            "addon": "cosy_tts",
+            "extension_group": "tts",
             "property": {
               "api_key": "${env:QWEN_API_KEY}",
               "model": "cosyvoice-v1",
@@ -1264,15 +1263,15 @@
           },
           {
             "type": "extension",
-            "extension_group": "chat_transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "chat_transcriber"
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector_python",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           }
         ],
         "connections": [
@@ -1324,6 +1323,17 @@
           {
             "extension_group": "llm",
             "extension": "qwen_llm",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "cosy_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -1338,25 +1348,14 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "cosy_tts"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "cosy_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1365,9 +1364,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1400,9 +1399,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -1422,9 +1421,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "bedrock",
-            "addon": "bedrock_llm_python",
             "name": "bedrock_llm",
+            "addon": "bedrock_llm_python",
+            "extension_group": "bedrock",
             "property": {
               "region": "us-east-1",
               "access_key": "${env:AWS_ACCESS_KEY_ID}",
@@ -1438,9 +1437,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "polly_tts",
             "name": "polly_tts",
+            "addon": "polly_tts",
+            "extension_group": "tts",
             "property": {
               "region": "us-east-1",
               "access_key": "${env:AWS_ACCESS_KEY_ID}",
@@ -1453,9 +1452,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector_python",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           }
         ],
         "connections": [
@@ -1481,9 +1480,9 @@
           {
             "extension_group": "bedrock",
             "extension": "bedrock_llm",
-            "data": [
+            "cmd": [
               {
-                "name": "text_data",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "tts",
@@ -1492,9 +1491,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "data": [
               {
-                "name": "flush",
+                "name": "text_data",
                 "dest": [
                   {
                     "extension_group": "tts",
@@ -1507,9 +1506,9 @@
           {
             "extension_group": "tts",
             "extension": "polly_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1518,9 +1517,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1553,9 +1552,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -1575,9 +1574,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "asr",
-            "addon": "transcribe_asr_python",
             "name": "transcribe_asr",
+            "addon": "transcribe_asr_python",
+            "extension_group": "asr",
             "property": {
               "region": "us-east-1",
               "access_key": "${env:AWS_ACCESS_KEY_ID}",
@@ -1588,9 +1587,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "bedrock",
-            "addon": "bedrock_llm_python",
             "name": "bedrock_llm",
+            "addon": "bedrock_llm_python",
+            "extension_group": "bedrock",
             "property": {
               "region": "us-east-1",
               "access_key": "${env:AWS_ACCESS_KEY_ID}",
@@ -1604,9 +1603,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "polly_tts",
             "name": "polly_tts",
+            "addon": "polly_tts",
+            "extension_group": "tts",
             "property": {
               "region": "us-east-1",
               "access_key": "${env:AWS_ACCESS_KEY_ID}",
@@ -1619,26 +1618,15 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector_python",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           }
         ],
         "connections": [
           {
             "extension_group": "default",
             "extension": "agora_rtc",
-            "audio_frame": [
-              {
-                "name": "pcm_frame",
-                "dest": [
-                  {
-                    "extension_group": "asr",
-                    "extension": "transcribe_asr"
-                  }
-                ]
-              }
-            ],
             "cmd": [
               {
                 "name": "on_user_joined",
@@ -1660,6 +1648,17 @@
               },
               {
                 "name": "on_connection_failure",
+                "dest": [
+                  {
+                    "extension_group": "asr",
+                    "extension": "transcribe_asr"
+                  }
+                ]
+              }
+            ],
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "asr",
@@ -1691,9 +1690,9 @@
           {
             "extension_group": "bedrock",
             "extension": "bedrock_llm",
-            "data": [
+            "cmd": [
               {
-                "name": "text_data",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "tts",
@@ -1702,9 +1701,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "data": [
               {
-                "name": "flush",
+                "name": "text_data",
                 "dest": [
                   {
                     "extension_group": "tts",
@@ -1717,9 +1716,9 @@
           {
             "extension_group": "tts",
             "extension": "polly_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1728,9 +1727,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1763,9 +1762,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -1787,15 +1786,15 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           },
           {
             "type": "extension",
-            "extension_group": "chatgpt",
-            "addon": "openai_chatgpt_python",
             "name": "openai_chatgpt",
+            "addon": "openai_chatgpt_python",
+            "extension_group": "chatgpt",
             "property": {
               "base_url": "${env:OPENAI_API_BASE}",
               "api_key": "${env:OPENAI_API_KEY}",
@@ -1812,9 +1811,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "azure_tts",
             "name": "azure_tts",
+            "addon": "azure_tts",
+            "extension_group": "tts",
             "property": {
               "azure_subscription_key": "${env:AZURE_TTS_KEY}",
               "azure_subscription_region": "${env:AZURE_TTS_REGION}",
@@ -1823,15 +1822,35 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           }
         ],
         "connections": [
           {
             "extension_group": "default",
             "extension": "agora_rtc",
+            "cmd": [
+              {
+                "name": "on_user_joined",
+                "dest": [
+                  {
+                    "extension_group": "chatgpt",
+                    "extension": "openai_chatgpt"
+                  }
+                ]
+              },
+              {
+                "name": "on_user_left",
+                "dest": [
+                  {
+                    "extension_group": "chatgpt",
+                    "extension": "openai_chatgpt"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -1861,31 +1880,22 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "on_user_joined",
-                "dest": [
-                  {
-                    "extension_group": "chatgpt",
-                    "extension": "openai_chatgpt"
-                  }
-                ]
-              },
-              {
-                "name": "on_user_left",
-                "dest": [
-                  {
-                    "extension_group": "chatgpt",
-                    "extension": "openai_chatgpt"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "chatgpt",
             "extension": "openai_chatgpt",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "azure_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -1900,25 +1910,14 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "azure_tts"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "azure_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1927,9 +1926,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -1977,9 +1976,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -1999,15 +1998,15 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "gemini_llm_python",
             "name": "gemini_llm",
+            "addon": "gemini_llm_python",
+            "extension_group": "llm",
             "property": {
               "api_key": "$GEMINI_API_KEY",
               "greeting": "TEN Agent connected. How can I help you today?",
@@ -2022,9 +2021,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "azure_tts",
             "name": "azure_tts",
+            "addon": "azure_tts",
+            "extension_group": "tts",
             "property": {
               "azure_subscription_key": "${env:AZURE_TTS_KEY}",
               "azure_subscription_region": "${env:AZURE_TTS_REGION}",
@@ -2033,9 +2032,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           }
         ],
         "connections": [
@@ -2065,6 +2064,17 @@
           {
             "extension_group": "llm",
             "extension": "gemini_llm",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "azure_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -2079,25 +2089,14 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "azure_tts"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "azure_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -2106,9 +2105,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -2156,9 +2155,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "rtc",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "rtc",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -2178,9 +2177,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "qwen_llm_python",
             "name": "qwen_llm",
+            "addon": "qwen_llm_python",
+            "extension_group": "llm",
             "property": {
               "api_key": "${env:QWEN_API_KEY}",
               "model": "qwen-max",
@@ -2191,9 +2190,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "cosy_tts",
             "name": "cosy_tts",
+            "addon": "cosy_tts",
+            "extension_group": "tts",
             "property": {
               "api_key": "${env:QWEN_API_KEY}",
               "model": "cosyvoice-v1",
@@ -2203,9 +2202,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "azure_tts",
             "name": "azure_tts",
+            "addon": "azure_tts",
+            "extension_group": "tts",
             "property": {
               "azure_subscription_key": "${env:AZURE_TTS_KEY}",
               "azure_subscription_region": "${env:AZURE_TTS_REGION}",
@@ -2214,21 +2213,21 @@
           },
           {
             "type": "extension",
-            "extension_group": "chat_transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "chat_transcriber"
           },
           {
             "type": "extension",
-            "extension_group": "interrupt_detector",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector_python",
-            "name": "interrupt_detector"
+            "extension_group": "interrupt_detector"
           },
           {
             "type": "extension",
-            "extension_group": "http_server",
-            "addon": "http_server_python",
             "name": "http_server",
+            "addon": "http_server_python",
+            "extension_group": "http_server",
             "property": {
               "listen_addr": "127.0.0.1",
               "listen_port": 8080
@@ -2236,9 +2235,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "embedding",
-            "addon": "aliyun_text_embedding",
             "name": "aliyun_text_embedding",
+            "addon": "aliyun_text_embedding",
+            "extension_group": "embedding",
             "property": {
               "api_key": "${env:ALIYUN_TEXT_EMBEDDING_API_KEY}",
               "model": "text-embedding-v3"
@@ -2246,9 +2245,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "vector_storage",
-            "addon": "aliyun_analyticdb_vector_storage",
             "name": "aliyun_analyticdb_vector_storage",
+            "addon": "aliyun_analyticdb_vector_storage",
+            "extension_group": "vector_storage",
             "property": {
               "alibaba_cloud_access_key_id": "${env:ALIBABA_CLOUD_ACCESS_KEY_ID}",
               "alibaba_cloud_access_key_secret": "${env:ALIBABA_CLOUD_ACCESS_KEY_SECRET}",
@@ -2262,16 +2261,16 @@
           },
           {
             "type": "extension",
-            "extension_group": "file_chunker",
-            "addon": "file_chunker",
             "name": "file_chunker",
+            "addon": "file_chunker",
+            "extension_group": "file_chunker",
             "property": {}
           },
           {
             "type": "extension",
-            "extension_group": "llama_index",
-            "addon": "llama_index_chat_engine",
             "name": "llama_index",
+            "addon": "llama_index_chat_engine",
+            "extension_group": "llama_index",
             "property": {
               "greeting": "TEN Agent connected. How can I help you today?",
               "chat_memory_token_limit": 3000
@@ -2358,21 +2357,6 @@
           {
             "extension_group": "llama_index",
             "extension": "llama_index",
-            "data": [
-              {
-                "name": "text_data",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "azure_tts"
-                  },
-                  {
-                    "extension_group": "chat_transcriber",
-                    "extension": "message_collector"
-                  }
-                ]
-              }
-            ],
             "cmd": [
               {
                 "name": "flush",
@@ -2414,14 +2398,29 @@
                   }
                 ]
               }
+            ],
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "azure_tts"
+                  },
+                  {
+                    "extension_group": "chat_transcriber",
+                    "extension": "message_collector"
+                  }
+                ]
+              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "azure_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -2430,9 +2429,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -2531,9 +2530,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "rtc",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "rtc",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "",
@@ -2548,9 +2547,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "openai_v2v_python",
             "name": "openai_v2v_python",
+            "addon": "openai_v2v_python",
+            "extension_group": "llm",
             "property": {
               "api_key": "${env:OPENAI_REALTIME_API_KEY}",
               "temperature": 0.9,
@@ -2565,9 +2564,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           }
         ],
         "connections": [
@@ -2589,9 +2588,9 @@
           {
             "extension_group": "llm",
             "extension": "openai_v2v_python",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -2611,9 +2610,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -2646,9 +2645,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "rtc",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "rtc",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "",
@@ -2663,9 +2662,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "openai_v2v_python",
             "name": "openai_v2v_python",
+            "addon": "openai_v2v_python",
+            "extension_group": "llm",
             "property": {
               "api_key": "${env:OPENAI_REALTIME_API_KEY}",
               "temperature": 0.9,
@@ -2680,24 +2679,24 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           },
           {
             "type": "extension",
-            "extension_group": "tools",
-            "addon": "weatherapi_tool_python",
             "name": "weatherapi_tool_python",
+            "addon": "weatherapi_tool_python",
+            "extension_group": "tools",
             "property": {
               "api_key": "${env:WEATHERAPI_API_KEY}"
             }
           },
           {
             "type": "extension",
-            "extension_group": "tools",
-            "addon": "bingsearch_tool_python",
             "name": "bingsearch_tool_python",
+            "addon": "bingsearch_tool_python",
+            "extension_group": "tools",
             "property": {
               "api_key": "${env:BING_API_KEY}"
             }
@@ -2752,28 +2751,6 @@
           {
             "extension_group": "llm",
             "extension": "openai_v2v_python",
-            "audio_frame": [
-              {
-                "name": "pcm_frame",
-                "dest": [
-                  {
-                    "extension_group": "rtc",
-                    "extension": "agora_rtc"
-                  }
-                ]
-              }
-            ],
-            "data": [
-              {
-                "name": "text_data",
-                "dest": [
-                  {
-                    "extension_group": "transcriber",
-                    "extension": "message_collector"
-                  }
-                ]
-              }
-            ],
             "cmd": [
               {
                 "name": "flush",
@@ -2789,18 +2766,7 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
                   }
                 ]
               },
@@ -2809,18 +2775,7 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
                   }
                 ]
               },
@@ -2829,18 +2784,7 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
                   }
                 ]
               },
@@ -2849,18 +2793,29 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "bingsearch_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "bingsearch_tool_python"
+                  }
+                ]
+              }
+            ],
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension_group": "transcriber",
+                    "extension": "message_collector"
+                  }
+                ]
+              }
+            ],
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
+                "dest": [
+                  {
+                    "extension_group": "rtc",
+                    "extension": "agora_rtc"
                   }
                 ]
               }
@@ -2889,9 +2844,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "rtc",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "rtc",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "",
@@ -2912,9 +2867,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "openai_v2v_python",
             "name": "openai_v2v_python",
+            "addon": "openai_v2v_python",
+            "extension_group": "llm",
             "property": {
               "api_key": "${env:OPENAI_REALTIME_API_KEY}",
               "temperature": 0.9,
@@ -2930,9 +2885,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "fish_audio_tts",
             "name": "fish_audio_tts",
+            "addon": "fish_audio_tts",
+            "extension_group": "tts",
             "property": {
               "api_key": "${env:FISH_AUDIO_TTS_KEY}",
               "model_id": "d8639b5cc95548f5afbcfe22d3ba5ce5",
@@ -2943,26 +2898,15 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           }
         ],
         "connections": [
           {
             "extension_group": "rtc",
             "extension": "agora_rtc",
-            "audio_frame": [
-              {
-                "name": "pcm_frame",
-                "dest": [
-                  {
-                    "extension_group": "llm",
-                    "extension": "openai_v2v_python"
-                  }
-                ]
-              }
-            ],
             "data": [
               {
                 "name": "text_data",
@@ -2973,11 +2917,33 @@
                   }
                 ]
               }
+            ],
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
+                "dest": [
+                  {
+                    "extension_group": "llm",
+                    "extension": "openai_v2v_python"
+                  }
+                ]
+              }
             ]
           },
           {
             "extension_group": "llm",
             "extension": "openai_v2v_python",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "fish_audio_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -2992,25 +2958,14 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "fish_audio_tts"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "fish_audio_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -3019,9 +2974,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -3054,9 +3009,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "rtc",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "rtc",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "",
@@ -3077,9 +3032,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "openai_v2v_python",
             "name": "openai_v2v_python",
+            "addon": "openai_v2v_python",
+            "extension_group": "llm",
             "property": {
               "api_key": "${env:OPENAI_REALTIME_API_KEY}",
               "temperature": 0.9,
@@ -3095,9 +3050,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "fish_audio_tts",
             "name": "fish_audio_tts",
+            "addon": "fish_audio_tts",
+            "extension_group": "tts",
             "property": {
               "api_key": "${env:FISH_AUDIO_TTS_KEY}",
               "model_id": "d8639b5cc95548f5afbcfe22d3ba5ce5",
@@ -3108,24 +3063,24 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           },
           {
             "type": "extension",
-            "extension_group": "tools",
-            "addon": "weatherapi_tool_python",
             "name": "weatherapi_tool_python",
+            "addon": "weatherapi_tool_python",
+            "extension_group": "tools",
             "property": {
               "api_key": "${env:WEATHERAPI_API_KEY}"
             }
           },
           {
             "type": "extension",
-            "extension_group": "tools",
-            "addon": "bingsearch_tool_python",
             "name": "bingsearch_tool_python",
+            "addon": "bingsearch_tool_python",
+            "extension_group": "tools",
             "property": {
               "api_key": "${env:BING_API_KEY}"
             }
@@ -3135,17 +3090,6 @@
           {
             "extension_group": "rtc",
             "extension": "agora_rtc",
-            "audio_frame": [
-              {
-                "name": "pcm_frame",
-                "dest": [
-                  {
-                    "extension_group": "llm",
-                    "extension": "openai_v2v_python"
-                  }
-                ]
-              }
-            ],
             "data": [
               {
                 "name": "text_data",
@@ -3153,6 +3097,17 @@
                   {
                     "extension_group": "transcriber",
                     "extension": "message_collector"
+                  }
+                ]
+              }
+            ],
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
+                "dest": [
+                  {
+                    "extension_group": "llm",
+                    "extension": "openai_v2v_python"
                   }
                 ]
               }
@@ -3191,21 +3146,6 @@
           {
             "extension_group": "llm",
             "extension": "openai_v2v_python",
-            "data": [
-              {
-                "name": "text_data",
-                "dest": [
-                  {
-                    "extension_group": "transcriber",
-                    "extension": "message_collector"
-                  },
-                  {
-                    "extension_group": "tts",
-                    "extension": "fish_audio_tts"
-                  }
-                ]
-              }
-            ],
             "cmd": [
               {
                 "name": "flush",
@@ -3221,18 +3161,7 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
                   }
                 ]
               },
@@ -3241,18 +3170,7 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
                   }
                 ]
               },
@@ -3261,18 +3179,7 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
                   }
                 ]
               },
@@ -3281,18 +3188,22 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "bingsearch_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "bingsearch_tool_python"
+                  }
+                ]
+              }
+            ],
+            "data": [
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension_group": "transcriber",
+                    "extension": "message_collector"
+                  },
+                  {
+                    "extension_group": "tts",
+                    "extension": "fish_audio_tts"
                   }
                 ]
               }
@@ -3301,9 +3212,9 @@
           {
             "extension_group": "tts",
             "extension": "fish_audio_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -3312,9 +3223,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -3347,9 +3258,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "rtc",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "rtc",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "",
@@ -3364,9 +3275,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "openai_v2v_python",
             "name": "openai_v2v_python",
+            "addon": "openai_v2v_python",
+            "extension_group": "llm",
             "property": {
               "api_key": "${env:OPENAI_REALTIME_API_KEY}",
               "temperature": 0.9,
@@ -3382,33 +3293,33 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           },
           {
             "type": "extension",
-            "extension_group": "tools",
-            "addon": "weatherapi_tool_python",
             "name": "weatherapi_tool_python",
+            "addon": "weatherapi_tool_python",
+            "extension_group": "tools",
             "property": {
               "api_key": "${env:WEATHERAPI_API_KEY}"
             }
           },
           {
             "type": "extension",
-            "extension_group": "tools",
-            "addon": "bingsearch_tool_python",
             "name": "bingsearch_tool_python",
+            "addon": "bingsearch_tool_python",
+            "extension_group": "tools",
             "property": {
               "api_key": "${env:BING_API_KEY}"
             }
           },
           {
             "type": "extension",
-            "extension_group": "context",
-            "addon": "tsdb_firestore",
             "name": "tsdb_firestore",
+            "addon": "tsdb_firestore",
+            "extension_group": "context",
             "property": {
               "credentials": {
                 "type": "service_account",
@@ -3477,37 +3388,6 @@
           {
             "extension_group": "realtime",
             "extension": "openai_v2v_python",
-            "audio_frame": [
-              {
-                "name": "pcm_frame",
-                "dest": [
-                  {
-                    "extension_group": "rtc",
-                    "extension": "agora_rtc"
-                  }
-                ]
-              }
-            ],
-            "data": [
-              {
-                "name": "append",
-                "dest": [
-                  {
-                    "extension_group": "context",
-                    "extension": "tsdb_firestore"
-                  }
-                ]
-              },
-              {
-                "name": "text_data",
-                "dest": [
-                  {
-                    "extension_group": "transcriber",
-                    "extension": "message_collector"
-                  }
-                ]
-              }
-            ],
             "cmd": [
               {
                 "name": "flush",
@@ -3532,18 +3412,7 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
                   }
                 ]
               },
@@ -3552,18 +3421,7 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
                   }
                 ]
               },
@@ -3572,18 +3430,7 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
                   }
                 ]
               },
@@ -3592,18 +3439,38 @@
                 "dest": [
                   {
                     "extension_group": "tools",
-                    "extension": "weatherapi_tool_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "tool_call"
-                        }
-                      ]
-                    }
+                    "extension": "weatherapi_tool_python"
+                  }
+                ]
+              }
+            ],
+            "data": [
+              {
+                "name": "append",
+                "dest": [
+                  {
+                    "extension_group": "context",
+                    "extension": "tsdb_firestore"
+                  }
+                ]
+              },
+              {
+                "name": "text_data",
+                "dest": [
+                  {
+                    "extension_group": "transcriber",
+                    "extension": "message_collector"
+                  }
+                ]
+              }
+            ],
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
+                "dest": [
+                  {
+                    "extension_group": "rtc",
+                    "extension": "agora_rtc"
                   }
                 ]
               }
@@ -3632,9 +3499,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -3654,9 +3521,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "asr",
-            "addon": "deepgram_asr_python",
             "name": "deepgram_asr",
+            "addon": "deepgram_asr_python",
+            "extension_group": "asr",
             "property": {
               "api_key": "${env:DEEPGRAM_API_KEY}",
               "language": "en-US",
@@ -3666,9 +3533,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "chatgpt",
-            "addon": "openai_chatgpt",
             "name": "openai_chatgpt",
+            "addon": "openai_chatgpt",
+            "extension_group": "chatgpt",
             "property": {
               "base_url": "",
               "api_key": "${env:OPENAI_API_KEY}",
@@ -3683,9 +3550,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "cartesia_tts",
             "name": "cartesia_tts",
+            "addon": "cartesia_tts",
+            "extension_group": "tts",
             "property": {
               "api_key": "${env:CARTESIA_API_KEY}",
               "cartesia_version": "2024-06-10",
@@ -3696,36 +3563,21 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector_python",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           }
         ],
         "connections": [
           {
             "extension_group": "default",
             "extension": "agora_rtc",
-            "audio_frame": [
-              {
-                "name": "pcm_frame",
-                "dest": [
-                  {
-                    "extension_group": "asr",
-                    "extension": "deepgram_asr"
-                  },
-                  {
-                    "extension_group": "transcriber",
-                    "extension": "message_collector"
-                  }
-                ]
-              }
-            ],
             "cmd": [
               {
                 "name": "on_user_joined",
@@ -3754,6 +3606,21 @@
                   }
                 ]
               }
+            ],
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
+                "dest": [
+                  {
+                    "extension_group": "asr",
+                    "extension": "deepgram_asr"
+                  },
+                  {
+                    "extension_group": "transcriber",
+                    "extension": "message_collector"
+                  }
+                ]
+              }
             ]
           },
           {
@@ -3778,6 +3645,17 @@
           {
             "extension_group": "chatgpt",
             "extension": "openai_chatgpt",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "cartesia_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -3789,17 +3667,6 @@
                   {
                     "extension_group": "transcriber",
                     "extension": "message_collector"
-                  }
-                ]
-              }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "cartesia_tts"
                   }
                 ]
               }
@@ -3823,9 +3690,9 @@
           {
             "extension_group": "tts",
             "extension": "cartesia_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -3834,9 +3701,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -3849,9 +3716,9 @@
           {
             "extension_group": "default",
             "extension": "interrupt_detector",
-            "data": [
+            "cmd": [
               {
-                "name": "text_data",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "chatgpt",
@@ -3860,9 +3727,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "data": [
               {
-                "name": "flush",
+                "name": "text_data",
                 "dest": [
                   {
                     "extension_group": "chatgpt",
@@ -3880,9 +3747,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -3902,9 +3769,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "asr",
-            "addon": "deepgram_asr_python",
             "name": "deepgram_asr",
+            "addon": "deepgram_asr_python",
+            "extension_group": "asr",
             "property": {
               "api_key": "${env:DEEPGRAM_API_KEY}",
               "language": "en-US",
@@ -3914,9 +3781,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "chatgpt",
-            "addon": "openai_chatgpt",
             "name": "openai_chatgpt",
+            "addon": "openai_chatgpt",
+            "extension_group": "chatgpt",
             "property": {
               "base_url": "",
               "api_key": "${env:OPENAI_API_KEY}",
@@ -3931,9 +3798,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "fish_audio_tts",
             "name": "fish_audio_tts",
+            "addon": "fish_audio_tts",
+            "extension_group": "tts",
             "property": {
               "api_key": "${env:FISH_AUDIO_TTS_KEY}",
               "model_id": "d8639b5cc95548f5afbcfe22d3ba5ce5",
@@ -3944,36 +3811,21 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector_python",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           }
         ],
         "connections": [
           {
             "extension_group": "default",
             "extension": "agora_rtc",
-            "audio_frame": [
-              {
-                "name": "pcm_frame",
-                "dest": [
-                  {
-                    "extension_group": "asr",
-                    "extension": "deepgram_asr"
-                  },
-                  {
-                    "extension_group": "transcriber",
-                    "extension": "message_collector"
-                  }
-                ]
-              }
-            ],
             "cmd": [
               {
                 "name": "on_user_joined",
@@ -3995,6 +3847,17 @@
               },
               {
                 "name": "on_connection_failure",
+                "dest": [
+                  {
+                    "extension_group": "asr",
+                    "extension": "deepgram_asr"
+                  }
+                ]
+              }
+            ],
+            "audio_frame": [
+              {
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "asr",
@@ -4026,6 +3889,17 @@
           {
             "extension_group": "chatgpt",
             "extension": "openai_chatgpt",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "fish_audio_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -4037,17 +3911,6 @@
                   {
                     "extension_group": "transcriber",
                     "extension": "message_collector"
-                  }
-                ]
-              }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "fish_audio_tts"
                   }
                 ]
               }
@@ -4071,9 +3934,9 @@
           {
             "extension_group": "tts",
             "extension": "fish_audio_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -4082,9 +3945,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -4097,9 +3960,9 @@
           {
             "extension_group": "default",
             "extension": "interrupt_detector",
-            "data": [
+            "cmd": [
               {
-                "name": "text_data",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "chatgpt",
@@ -4108,9 +3971,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "data": [
               {
-                "name": "flush",
+                "name": "text_data",
                 "dest": [
                   {
                     "extension_group": "chatgpt",
@@ -4128,9 +3991,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "rtc",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "rtc",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "",
@@ -4144,18 +4007,18 @@
           },
           {
             "type": "extension",
-            "extension_group": "agora_sess_ctrl",
-            "addon": "agora_sess_ctrl",
             "name": "agora_sess_ctrl",
+            "addon": "agora_sess_ctrl",
+            "extension_group": "agora_sess_ctrl",
             "property": {
               "wait_for_eos": true
             }
           },
           {
             "type": "extension",
-            "extension_group": "llm",
-            "addon": "minimax_v2v_python",
             "name": "minimax_v2v_python",
+            "addon": "minimax_v2v_python",
+            "extension_group": "llm",
             "property": {
               "in_sample_rate": 16000,
               "token": "${env:MINIMAX_TOKEN}"
@@ -4163,9 +4026,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "message_collector",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "message_collector"
           }
         ],
         "connections": [
@@ -4187,6 +4050,17 @@
           {
             "extension_group": "agora_sess_ctrl",
             "extension": "agora_sess_ctrl",
+            "cmd": [
+              {
+                "name": "start_of_sentence",
+                "dest": [
+                  {
+                    "extension_group": "llm",
+                    "extension": "minimax_v2v_python"
+                  }
+                ]
+              }
+            ],
             "audio_frame": [
               {
                 "name": "pcm_frame",
@@ -4197,33 +4071,22 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "start_of_sentence",
-                "dest": [
-                  {
-                    "extension_group": "llm",
-                    "extension": "minimax_v2v_python",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "_ten.name",
-                          "conversion_mode": "fixed_value",
-                          "value": "flush"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "llm",
             "extension": "minimax_v2v_python",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "rtc",
+                    "extension": "agora_rtc"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -4238,17 +4101,6 @@
             "audio_frame": [
               {
                 "name": "pcm_frame",
-                "dest": [
-                  {
-                    "extension_group": "rtc",
-                    "extension": "agora_rtc"
-                  }
-                ]
-              }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "rtc",
@@ -4281,9 +4133,9 @@
         "nodes": [
           {
             "type": "extension",
-            "extension_group": "default",
-            "addon": "agora_rtc",
             "name": "agora_rtc",
+            "addon": "agora_rtc",
+            "extension_group": "default",
             "property": {
               "app_id": "${env:AGORA_APP_ID}",
               "token": "<agora_token>",
@@ -4305,9 +4157,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "rtm",
-            "addon": "agora_rtm",
             "name": "agora_rtm",
+            "addon": "agora_rtm",
+            "extension_group": "rtm",
             "property": {
               "channel": "ten_agent_test",
               "app_id": "${env:AGORA_APP_ID}",
@@ -4322,15 +4174,15 @@
           },
           {
             "type": "extension",
-            "extension_group": "default",
+            "name": "interrupt_detector",
             "addon": "interrupt_detector",
-            "name": "interrupt_detector"
+            "extension_group": "default"
           },
           {
             "type": "extension",
-            "extension_group": "chatgpt",
-            "addon": "openai_chatgpt_python",
             "name": "openai_chatgpt",
+            "addon": "openai_chatgpt_python",
+            "extension_group": "chatgpt",
             "property": {
               "base_url": "${env:OPENAI_API_BASE}",
               "api_key": "${env:OPENAI_API_KEY}",
@@ -4347,9 +4199,9 @@
           },
           {
             "type": "extension",
-            "extension_group": "tts",
-            "addon": "azure_tts",
             "name": "azure_tts",
+            "addon": "azure_tts",
+            "extension_group": "tts",
             "property": {
               "azure_subscription_key": "${env:AZURE_TTS_KEY}",
               "azure_subscription_region": "${env:AZURE_TTS_REGION}",
@@ -4358,21 +4210,50 @@
           },
           {
             "type": "extension",
-            "extension_group": "transcriber",
+            "name": "message_collector",
             "addon": "message_collector",
-            "name": "message_collector"
+            "extension_group": "transcriber"
           },
           {
             "type": "extension",
-            "extension_group": "agora_rtm_wrapper",
+            "name": "agora_rtm_wrapper",
             "addon": "agora_rtm_wrapper",
-            "name": "agora_rtm_wrapper"
+            "extension_group": "agora_rtm_wrapper"
           }
         ],
         "connections": [
           {
             "extension_group": "default",
             "extension": "agora_rtc",
+            "cmd": [
+              {
+                "name": "on_user_joined",
+                "dest": [
+                  {
+                    "extension_group": "chatgpt",
+                    "extension": "openai_chatgpt"
+                  }
+                ]
+              },
+              {
+                "name": "on_user_left",
+                "dest": [
+                  {
+                    "extension_group": "chatgpt",
+                    "extension": "openai_chatgpt"
+                  }
+                ]
+              },
+              {
+                "name": "on_user_audio_track_state_changed",
+                "dest": [
+                  {
+                    "extension_group": "agora_rtm_wrapper",
+                    "extension": "agora_rtm_wrapper"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -4402,63 +4283,18 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "on_user_joined",
-                "dest": [
-                  {
-                    "extension_group": "chatgpt",
-                    "extension": "openai_chatgpt"
-                  }
-                ]
-              },
-              {
-                "name": "on_user_left",
-                "dest": [
-                  {
-                    "extension_group": "chatgpt",
-                    "extension": "openai_chatgpt"
-                  }
-                ]
-              },
-              {
-                "name": "on_user_audio_track_state_changed",
-                "dest": [
-                  {
-                    "extension_group": "agora_rtm_wrapper",
-                    "extension": "agora_rtm_wrapper"
-                  }
-                ]
-              }
             ]
           },
           {
-            "extension": "agora_rtm",
             "extension_group": "rtm",
+            "extension": "agora_rtm",
             "data": [
               {
                 "name": "rtm_message_event",
                 "dest": [
                   {
                     "extension_group": "openai_chatgpt",
-                    "extension": "chatgpt",
-                    "msg_conversion": {
-                      "type": "per_property",
-                      "keep_original": true,
-                      "rules": [
-                        {
-                          "path": "text",
-                          "conversion_mode": "from_original",
-                          "original_path": "message"
-                        },
-                        {
-                          "path": "is_final",
-                          "conversion_mode": "fixed_value",
-                          "value": true
-                        }
-                      ]
-                    }
+                    "extension": "chatgpt"
                   }
                 ]
               }
@@ -4467,6 +4303,17 @@
           {
             "extension_group": "chatgpt",
             "extension": "openai_chatgpt",
+            "cmd": [
+              {
+                "name": "flush",
+                "dest": [
+                  {
+                    "extension_group": "tts",
+                    "extension": "azure_tts"
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "name": "text_data",
@@ -4481,25 +4328,14 @@
                   }
                 ]
               }
-            ],
-            "cmd": [
-              {
-                "name": "flush",
-                "dest": [
-                  {
-                    "extension_group": "tts",
-                    "extension": "azure_tts"
-                  }
-                ]
-              }
             ]
           },
           {
             "extension_group": "tts",
             "extension": "azure_tts",
-            "audio_frame": [
+            "cmd": [
               {
-                "name": "pcm_frame",
+                "name": "flush",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -4508,9 +4344,9 @@
                 ]
               }
             ],
-            "cmd": [
+            "audio_frame": [
               {
-                "name": "flush",
+                "name": "pcm_frame",
                 "dest": [
                   {
                     "extension_group": "default",
@@ -4576,6 +4412,7 @@
           }
         ]
       }
-    ]
+    ],
+    "log_level": 3
   }
 }
